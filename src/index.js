@@ -21,20 +21,20 @@ var menuLinks = [
   },
 ];
 
-// Part 1
+// ============= Part 1 =============
 const mainEl = document.querySelector("main");
 // const mainEl = document.querySelector("main");
 mainEl.style.backgroundColor = "var(--main-bg)";
 mainEl.innerHTML = "<h1>DOM Manipulation</h1>";
 mainEl.classList.add("flex-ctr");
 
-//Part 2
+//============= Part 2 =============
 const topMenuEl = document.getElementById("top-menu"); 
 topMenuEl.style.height = "100%";
 topMenuEl.style.backgroundColor = "var(--top-menu-bg)";
 topMenuEl.classList.add("flex-around");
 
-//Part 3
+//============= Part 3 =============
 
 const nav = document.querySelector("nav");
 
@@ -46,8 +46,11 @@ for (var i = 0; i < menuLinks.length; i++) {
   nav.appendChild(a);
 }
 
-//Part 3 of R-LAB
 
+//============= Start of R-LAB =============//
+
+
+//============ Part 3 ============
 const subMenuEl = document.getElementById("sub-menu");
 
 subMenuEl.style.height = "100%";
@@ -58,12 +61,12 @@ subMenuEl.style.top = "0"
 
 
 
-//Part 4 R-LAB
-const topMenuLinks = document.querySelectorAll("#top-menu a");
+//============== Part 4 =============
+const topMenuLinks = document.querySelectorAll("#top-menu a"); //cache anchor elements in topMenuEl
   
-for (var j = 0; i < topMenuLinks.length; j++) {
-    console.log(topMenuLinks[j].href)
-  }
+// for (var j = 0; j < topMenuLinks.length; j++) {
+//     console.log(topMenuLinks[j].href)
+//   } // unecessary code
 function myEventListener(Event) {
  Event.preventDefault();
  const anchorElement = Event.target.closest("a")
@@ -90,7 +93,51 @@ topMenuLinks.forEach(link => {
   });
 });
 
-//Part 5 R-LAB
+//============ Part 5 ==============
+const subMenuLinks = document.querySelectorAll("#sub-menu a");
+// const topMenuLinks = document.querySelectorAll("#top-menu a")
+// function subEventListener(Event) {
+//   const subAnchor = Event.target.closest("a")
+
+// }
+
+const clickedElement = document.querySelector("#top-menu")
+
+function subEventListener(clickedElement) {
+  const clickedLinkObject = clickedElement;
+  const hasSubLinks = menuLinks.hasOwnProperty("subLinks");
+
+  const subMenuEl = document.querySelector("#sub-menu")
+
+  if (hasSubLinks) {
+    subMenuEl.style.top = "100%";
+  }
+  else {
+    subMenuEl.style.top = "0";
+  }
+  // if (linkObject.subLinks) {
+  //   subMenuEl.style.top = "100%";
+  // }
+}
+
+// for (const subLink of menuLinks) {
+//   subLink.addEventListener("click", () => {
+//     subLink.classList.toggle("active");
+//   });
+// }
+
+//event listener for menu links
+subMenuLinks.forEach(subLink => {
+  subLink.addEventListener("click", function() {
+    subEventListener(subLink);
+  })
+})
+
+// const listItem = document.querySelector('subLinks');
+
+// listItem.addEventListener('click', () => {
+//   listItem.classList.toggle('active');
+// });
 
 
 
