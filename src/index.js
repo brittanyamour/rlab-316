@@ -1,3 +1,25 @@
+//build subMenu
+function buildSubMenu(givenElement, mainLinkName, linksArray) {
+  givenElement.innerHTML = "";
+
+  linksArray.forEach(linkElement => {
+    if (mainLinkName === linkElement.text) {
+      linkElement.subLinks.forEach(element => {
+        const subLink = document.createElement("a");
+
+        subLink.setAttribute("href", element.href)
+        subLink.textContent = element.text.toUpperCase();
+
+        givenElement.appendChild(subLink);
+      });
+      //check if current link has sublinks
+      const hasSubLinks = linkElement.subLinks && linkElement.subLinks.length > 0;
+
+      //Set the top position of the submenu to 100% if yes, 0 if no
+      givenElement.style.top = hasSubLinks ? "100%" : "0";
+    }
+  });
+}
 
 // Menu data structure
 var menuLinks = [
@@ -23,13 +45,16 @@ var menuLinks = [
 
 // ============= Part 1 =============
 const mainEl = document.querySelector("main");
-// const mainEl = document.querySelector("main");
+
+//Set CSS properties for main
 mainEl.style.backgroundColor = "var(--main-bg)";
 mainEl.innerHTML = "<h1>DOM Manipulation</h1>";
 mainEl.classList.add("flex-ctr");
 
 //============= Part 2 =============
 const topMenuEl = document.getElementById("top-menu"); 
+
+//Set CSS properties for top menu
 topMenuEl.style.height = "100%";
 topMenuEl.style.backgroundColor = "var(--top-menu-bg)";
 topMenuEl.classList.add("flex-around");
@@ -38,6 +63,7 @@ topMenuEl.classList.add("flex-around");
 
 const nav = document.querySelector("nav");
 
+//create nav links inside the nav tag
 for (var i = 0; i < menuLinks.length; i++) {
   var link = menuLinks[i];
   var a = document.createElement("a");
@@ -51,11 +77,14 @@ for (var i = 0; i < menuLinks.length; i++) {
 
 
 //============ Part 3 ============
-const subMenuEl = document.getElementById("sub-menu");
+const subMenuEl = document.getElementById("sub-menu"); //cache subMenuEl
 
+//Set CSS properties
 subMenuEl.style.height = "100%";
 subMenuEl.style.backgroundColor = "var(--sub-menu-bg)";
 subMenuEl.classList.add("flex-around");
+
+//Hide the sub-menu
 subMenuEl.style.position = "absolute";
 subMenuEl.style.top = "0"
 
@@ -64,11 +93,9 @@ subMenuEl.style.top = "0"
 //============== Part 4 =============
 const topMenuLinks = document.querySelectorAll("#top-menu a"); //cache anchor elements in topMenuEl
   
-// for (var j = 0; j < topMenuLinks.length; j++) {
-//     console.log(topMenuLinks[j].href)
-//   } // unecessary code
 function myEventListener(Event) {
- Event.preventDefault();
+ //Prevent default when main links are clicked
+  Event.preventDefault();
  const anchorElement = Event.target.closest("a")
  if (!anchorElement) {
   return;
@@ -76,6 +103,7 @@ function myEventListener(Event) {
  console.log(anchorElement)
 };
 
+//Loop through menu links and attach click event listener
 for (const link of topMenuLinks) {
   link.addEventListener("click", myEventListener);
 }
@@ -94,62 +122,50 @@ topMenuLinks.forEach(link => {
 });
 
 //============ Part 5 ==============
-const subMenuLinks = document.querySelectorAll("#sub-menu a");
-// const topMenuLinks = document.querySelectorAll("#top-menu a")
-// function subEventListener(Event) {
-//   const subAnchor = Event.target.closest("a")
 
-// }
+// Loop through top menu links and attach click event listener
+topMenuLinks.forEach(link => {
+    link.addEventListener("click", function(event) {
+        event.preventDefault(); // Prevent default link behavior
+        
+        // Add/remove 'active' class for styling
+        topMenuLinks.forEach(otherLink => {
+            otherLink.classList.remove("active");
+        });
+        this.classList.toggle("active");
 
-const clickedElement = document.querySelector("#top-menu")
+        // Call subEventListener to handle submenu behavior
+        subEventListener(this.textContent, menuLinks);
+    });
+});
 
-function subEventListener(clickedElement) {
-  const clickedLinkObject = clickedElement;
-  const hasSubLinks = menuLinks.hasOwnProperty("subLinks");
+// Submenu event listener function
+function subEventListener(clickedLinkText, menuLinks) {
+    const hasSubLinks = menuLinks.find(link => link.text === clickedLinkText && link.subLinks);
 
-  const subMenuEl = document.querySelector("#sub-menu")
+    const subMenuEl = document.querySelector("#sub-menu");
 
-  if (hasSubLinks) {
-    subMenuEl.style.top = "100%";
-  }
-  else {
-    subMenuEl.style.top = "0";
-  }
-  // if (linkObject.subLinks) {
-  //   subMenuEl.style.top = "100%";
-  // }
+    if (hasSubLinks) {
+        subMenuEl.style.top = "100%";
+    } else {
+        subMenuEl.style.top = "0";
+    }
 }
 
-// for (const subLink of menuLinks) {
-//   subLink.addEventListener("click", () => {
-//     subLink.classList.toggle("active");
-//   });
-// }
+//
 
-//event listener for menu links
-subMenuLinks.forEach(subLink => {
-  subLink.addEventListener("click", function() {
-    subEventListener(subLink);
-  })
+// event listener for the sub links, removes active if clicked and changes H1 element to name of the link
+subMenuEl.addEventListener("click", function (e) {
+  e.preventDefault();
+  if (e.target.tagName === "A") {
+      subMenuEl.style.top = "0";
+      topMenuLinks.forEach(element => {
+          if (element.classList.contains('active')) {
+              element.classList.remove('active');
+          }
+      });
+      mainH1.textContent = e.target.textContent
+  } else {
+      return;
+  }
 })
-
-// const listItem = document.querySelector('subLinks');
-
-// listItem.addEventListener('click', () => {
-//   listItem.classList.toggle('active');
-// });
-
-
-
-
-// item = document.createElement("a");
-//     item.textContent = link.text;
-//     item.href = link.href;
-//     menuContainer.appendChild(link);
-// // });
-// menuLinks.forEach(item => {
-//     item = document.createElement("a");
-//     item.textContent = link.text;
-//     item.href = link.href;
-//     menuContainer.appendChild(link);
-// });
